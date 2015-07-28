@@ -8,12 +8,16 @@ require 'uri'
 
 module Aliyun
   class Connection
+
+    ALLOWED_DATA_CENTERS = ["qingdao", "hangzhou", "hongkong"]
+
     def initialize(options = Paperclip::Attachment.default_options[:aliyun])
       @aliyun_access_id = options[:access_id]
       @aliyun_access_key = options[:access_key]
       @aliyun_bucket = options[:bucket]
 
-      data_centre = options[:data_centre].to_s.downcase == 'qingdao' ? 'qingdao' : 'hangzhou'
+      raise "Invalid data_centre, valid options are #{ALLOWED_DATA_CENTERS}" unless options[:data_centre].in?(ALLOWED_DATA_CENTERS)
+      data_centre = options[:data_centre].to_s.downcase# == 'qingdao' ? 'qingdao' : 'hangzhou'
       internal = options[:internal] == true ? true : false
       @aliyun_data_centre = "oss-cn-#{data_centre}#{internal ? '-internal' : nil}.aliyuncs.com"
 
